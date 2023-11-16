@@ -1,48 +1,89 @@
-<style>
-  
-.title {
-  font-family:'Times New Roman';
-  font-size: 30px;
-  font-weight: bold;
-  font-style: italic;
-  text-align:center;
-  line-height: 24px;
-  color:rgb(44, 110, 88);
+// Questions that will be asked
+const Questions = [{
+	q: "What is capital of India?",
+	a: [{ text: "Gandhinagar", isCorrect: false },
+	{ text: "Surat", isCorrect: false },
+	{ text: "Delhi", isCorrect: true },
+	{ text: "Mumbai", isCorrect: false }
+	]
+
+},
+{
+	q: "What is the capital of Thailand?",
+	a: [{ text: "Lampang", isCorrect: false, isSelected: false },
+	{ text: "Phuket", isCorrect: false },
+	{ text: "Ayutthaya", isCorrect: false },
+	{ text: "Bangkok", isCorrect: true }
+	]
+
+},
+{
+	q: "What is the capital of Gujarat",
+	a: [{ text: "Surat", isCorrect: false },
+	{ text: "Vadodara", isCorrect: false },
+	{ text: "Gandhinagar", isCorrect: true },
+	{ text: "Rajkot", isCorrect: false }
+	]
+
 }
-.Prac {
-  font-family: 'Lucida Sans';
-  color:blueviolet;
+
+]
+
+let currQuestion = 0
+let score = 0
+
+function loadQues() {
+	const question = document.getElementById("ques")
+	const opt = document.getElementById("opt")
+
+	question.textContent = Questions[currQuestion].q;
+	opt.innerHTML = ""
+
+	for (let i = 0; i < Questions[currQuestion].a.length; i++) {
+		const choicesdiv = document.createElement("div");
+		const choice = document.createElement("input");
+		const choiceLabel = document.createElement("label");
+
+		choice.type = "radio";
+		choice.name = "answer";
+		choice.value = i;
+
+		choiceLabel.textContent = Questions[currQuestion].a[i].text;
+
+		choicesdiv.appendChild(choice);
+		choicesdiv.appendChild(choiceLabel);
+		opt.appendChild(choicesdiv);
+	}
 }
 
-.OrgChem-button {
-  cursor: pointer;
+loadQues();
+
+function loadScore() {
+	const totalScore = document.getElementById("score")
+	totalScore.textContent = `You scored ${score} out of ${Questions.length}`
 }
 
-.AnaChem-button {
-  cursor: pointer;
+
+function nextQuestion() {
+	if (currQuestion < Questions.length - 1) {
+		currQuestion++;
+		loadQues();
+	} else {
+		document.getElementById("opt").remove()
+		document.getElementById("ques").remove()
+		document.getElementById("btn").remove()
+		loadScore();
+	}
 }
-</style>
 
-<p class="title"> 
-  Chemical Technician Free Reviewer
-</p>
+function checkAns() {
+	const selectedAns = parseInt(document.querySelector('input[name="answer"]:checked').value);
 
-<a href="https://www.facebook.com/permalink.php?story_fbid=pfbid02NRr3XVoiWY4DBszWoy7WdFn3Nqf152najwmB2jyfbZZNftnDVEzyv2q12a4L5mR5l&id=100095594888759"
- target="_blank" >Table of Specifications (TOS)
-</a>  
-
-<a href="https://www.prc.gov.ph/requirements/chemical-technician"
- target="_blank" >Qualifications and Requirements
-</a>
-
-<p class="Prac">
- Free Practice Tests
-</p>
-
-<button class="OrgChem-button">
-  Organic Chemistry
-</button>
-
-<button class="AnaChem-button">
-  Analytical Chemistry
-</button>
+	if (Questions[currQuestion].a[selectedAns].isCorrect) {
+		score++;
+		console.log("Correct")
+		nextQuestion();
+	} else {
+		nextQuestion();
+	}
+}
